@@ -34,6 +34,8 @@ Join_node1727045945032 = sparkSqlQuery(glueContext, query = SqlQuery0, mapping =
 ChangeSchema_node1727045164336 = ApplyMapping.apply(frame=Join_node1727045945032, mappings=[("sensorReadingTime", "bigint", "sensorReadingTime", "bigint"), ("serialNumber", "string", "serialNumber", "string"), ("distanceFromObject", "int", "distanceFromObject", "int")], transformation_ctx="ChangeSchema_node1727045164336")
 
 # Script generated for node Step Trainer Trusted
-StepTrainerTrusted_node1727045239208 = glueContext.write_dynamic_frame.from_options(frame=ChangeSchema_node1727045164336, connection_type="s3", format="json", connection_options={"path": "s3://stedi-lh/step_trainer/trusted/", "partitionKeys": []}, transformation_ctx="StepTrainerTrusted_node1727045239208")
-
+StepTrainerTrusted_node1727045239208 = glueContext.getSink(path="s3://stedi-lh/step_trainer/trusted/", connection_type="s3", updateBehavior="UPDATE_IN_DATABASE", partitionKeys=[], enableUpdateCatalog=True, transformation_ctx="StepTrainerTrusted_node1727045239208")
+StepTrainerTrusted_node1727045239208.setCatalogInfo(catalogDatabase="stedi",catalogTableName="step_trainer_trusted")
+StepTrainerTrusted_node1727045239208.setFormat("json")
+StepTrainerTrusted_node1727045239208.writeFrame(ChangeSchema_node1727045164336)
 job.commit()

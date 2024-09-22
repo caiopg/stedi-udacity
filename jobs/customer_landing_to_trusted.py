@@ -24,11 +24,12 @@ CustomerLanding_node1727038776755 = glueContext.create_dynamic_frame.from_option
 # Script generated for node Privacy Filter
 SqlQuery0 = '''
 select * from myDataSource where shareWithResearchAsOfDate is not null
-
 '''
 PrivacyFilter_node1727039079702 = sparkSqlQuery(glueContext, query = SqlQuery0, mapping = {"myDataSource":CustomerLanding_node1727038776755}, transformation_ctx = "PrivacyFilter_node1727039079702")
 
 # Script generated for node Customer Trusted
-CustomerTrusted_node1727039126297 = glueContext.write_dynamic_frame.from_options(frame=PrivacyFilter_node1727039079702, connection_type="s3", format="json", connection_options={"path": "s3://stedi-lh/customer/trusted/", "partitionKeys": []}, transformation_ctx="CustomerTrusted_node1727039126297")
-
+CustomerTrusted_node1727039126297 = glueContext.getSink(path="s3://stedi-lh/customer/trusted/", connection_type="s3", updateBehavior="UPDATE_IN_DATABASE", partitionKeys=[], enableUpdateCatalog=True, transformation_ctx="CustomerTrusted_node1727039126297")
+CustomerTrusted_node1727039126297.setCatalogInfo(catalogDatabase="stedi",catalogTableName="customer_trusted")
+CustomerTrusted_node1727039126297.setFormat("json")
+CustomerTrusted_node1727039126297.writeFrame(PrivacyFilter_node1727039079702)
 job.commit()
